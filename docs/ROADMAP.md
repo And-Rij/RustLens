@@ -57,7 +57,7 @@
 - [ ] Повторення на чистому Windows-комп'ютері.
 - [ ] Коротка демонстрація, скриншоти та підтримувані режими ігор.
 - [x] Форматування, Rust checks/tests, OCR integration і frontend typecheck/build; Windows CI додано.
-- [ ] Перший успішний запуск CI на GitHub.
+- [x] Перший успішний [Windows CI](https://github.com/And-Rij/RustLens/actions/runs/38473479923) на GitHub для ce2265f (2026-10-14).
 - [x] MIT, відомості про сторонні компоненти, 374 dependency notices та окрема атрибуція OCR-ваг; локальні дані описані.
 - [x] Release EXE і NSIS installer зібрані; відомі обмеження описані.
 - [ ] Ручний сценарій після встановлення інсталятора.

@@ -68,7 +68,7 @@ cargo test --manifest-path src-tauri/Cargo.toml --locked --lib recognizes_englis
 cargo test --manifest-path src-tauri/Cargo.toml --locked --lib translates_using_local_ollama -- --ignored
 ```
 
-У звичайному наборі 13 тестів; 3 додаткові тести потребують локальних ресурсів або створюють fixture. Перевірено збереження SQLite після повторного відкриття, пошук, позначки, TSV/HTML та реальний повторний імпорт у тимчасову колекцію Anki без дублікатів. [CI](.github/workflows/checks.yml) запускає Windows checks і OCR-тест без Ollama; його перший запуск на GitHub ще очікується.
+У звичайному наборі 13 тестів; 3 додаткові тести потребують локальних ресурсів або створюють fixture. Перевірено збереження SQLite після повторного відкриття, пошук, позначки, TSV/HTML та реальний повторний імпорт у тимчасову колекцію Anki без дублікатів. [CI](.github/workflows/checks.yml) запускає Windows checks і OCR-тест без Ollama; перший [запуск на GitHub](https://github.com/And-Rij/RustLens/actions/runs/38473479923) завершився успішно 2026-10-14.
 
 Локальна release-збірка NSIS-інсталятора перевірена на цьому Windows-комп'ютері. Запуск після встановлення ще не перевірено. Повторна збірка:
 

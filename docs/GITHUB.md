@@ -1,6 +1,6 @@
 # Перша публікація на GitHub
 
-Ліцензію MIT обрано 2026-10-14. Створено публічний репозиторій [And-Rij/RustLens](https://github.com/And-Rij/RustLens). Код і документацію опубліковано в main; перший коміт — ce2265f. [Перший CI](https://github.com/And-Rij/RustLens/actions/runs/38473479923) запущено; на момент публікації його результат ще очікується.
+Ліцензію MIT обрано 2026-10-14. Створено публічний репозиторій [And-Rij/RustLens](https://github.com/And-Rij/RustLens). Код і документацію опубліковано в main; перший коміт — ce2265f. [Перший CI](https://github.com/And-Rij/RustLens/actions/runs/38473479923) завершився успішно 2026-10-14 (код ce2265f).
 
 ## Що включити
 

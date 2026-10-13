@@ -70,3 +70,5 @@ SQLite-історія й Anki-файл підключені. Створення 
 Реєстр локальної Windows: DisplayVersion 25H2, build 26200.9168, EditionID Professional. Поле ProductName повідомляє Windows 10 Pro; це сирі значення реєстру, а не результат Win32_OperatingSystem (доступ до CIM був відхилений).
 
 Build 26200 відповідає Windows 11 25H2 за [таблицею Microsoft](https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information). Назву версії визначено за цим зіставленням; поле ProductName реєстру залишено вище без зміни.
+
+Перший [Windows CI](https://github.com/And-Rij/RustLens/actions/runs/38473479923) для коду ce2265f завершився зі status completed / conclusion success. Результат підтверджено GitHub API та сторінкою job «This job succeeded». Наступні коміти змінюють лише документацію і позначені [skip ci].
