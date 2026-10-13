@@ -1,0 +1,14 @@
+Ocrs pre-trained text detection and text recognition models
+Author: Robert Knight / Ocrs project contributors
+Source: https://huggingface.co/robertknight/ocrs
+Training project: https://github.com/robertknight/ocrs-models
+License designated by model card: Creative Commons Attribution-ShareAlike 4.0 International
+License: https://creativecommons.org/licenses/by-sa/4.0/
+Legal code: https://creativecommons.org/licenses/by-sa/4.0/legalcode.en
+
+Downloaded from the Ocrs project's S3 distribution, without modification.
+SHA-256:
+text-detection.onnx: a917b23dbd9524b465df7e922641b3ff2981623df4ded5a0234004ef2fee7cfe
+text-recognition.onnx: 86c145c2edb96c8caed5b1ebb8f44d706408922211451c309c625157dd6061c5
+
+RustLens code's MIT license does not replace the model license.

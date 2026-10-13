@@ -1,0 +1,4 @@
+Unmodified MPL-2.0 selectors dependency source is available from:
+https://crates.io/crates/selectors
+https://github.com/servo/stylo/tree/main/selectors
+The precise version is recorded in Cargo.lock and DEPENDENCIES.txt. Download the matching crate archive from crates.io for the distributed source version.
