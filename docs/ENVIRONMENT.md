@@ -64,3 +64,9 @@ SQLite-історія й Anki-файл підключені. Створення 
 ## Підготовка GitHub (2026-10-14)
 
 Погоджено MIT та публічний And-Rij/RustLens. Додано Windows CI з зафіксованими ревізіями actions, Node 24.12.0, pnpm 12.11.2 і Rust 1.96.0. Frozen-lockfile перевірено після додавання package-manager metadata. 13 звичайних тестів, OCR integration, Clippy, fmt і frontend build пройдені. Release EXE та NSIS installer зібрані локально; встановлення інсталятора й CI на GitHub ще очікують перевірки.
+
+Публікація: ce2265f848f42275247c50a496012ab26435581c у main. Перевірено відсутність незакомічених змін і доступність README на GitHub. NSIS installer 14,32 MiB: SHA-256 `85da4149d25c09f8173165679bc1f6cc34f66a7e3d61f6e03259fcd278052d53`. NSIS script включає обидві ONNX-моделі та чотири notices-файли; шість ресурсів release відповідають вихідним за SHA-256.
+
+Реєстр локальної Windows: DisplayVersion 25H2, build 26200.9168, EditionID Professional. Поле ProductName повідомляє Windows 10 Pro; це сирі значення реєстру, а не результат Win32_OperatingSystem (доступ до CIM був відхилений).
+
+Build 26200 відповідає Windows 11 25H2 за [таблицею Microsoft](https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information). Назву версії визначено за цим зіставленням; поле ProductName реєстру залишено вище без зміни.

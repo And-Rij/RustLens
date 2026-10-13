@@ -26,9 +26,11 @@
 - Запущена [Ollama](https://ollama.com/) з локальною [TranslateGemma](https://ollama.com/library/translategemma). Типова модель — `translategemma:12b`.
 - Anki для імпорту карток; AnkiConnect для цього способу не потрібний.
 
-У папці проєкту:
+Отримай код, потім виконай команди в його папці:
 
 ```powershell
+git clone https://github.com/And-Rij/RustLens.git
+cd RustLens
 pnpm install --frozen-lockfile
 pnpm models:download
 ollama list
