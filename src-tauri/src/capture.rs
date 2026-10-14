@@ -1,3 +1,6 @@
+//! Capture the monitor under the pointer and expose PNG previews for the WebView.
+//! Full frames and cropped previews are held in memory, not written to disk.
+
 use crate::geometry::Rect;
 use base64::{Engine, engine::general_purpose::STANDARD};
 use image::{DynamicImage, ImageFormat, RgbaImage};
@@ -49,7 +52,7 @@ pub fn capture(id: u64, cursor: (i32, i32)) -> Result<Frame, String> {
     );
     let image = monitor
         .capture_image()
-        .map_err(|e| format!("Не вдалося захопити екран. Спробуйте віконний режим гри. {e}"))?;
+        .map_err(|e| format!("Не вдалося захопити екран. Спробуй віконний режим гри. {e}"))?;
     let preview = FramePreview {
         id,
         width: image.width(),

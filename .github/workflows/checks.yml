@@ -22,17 +22,21 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
-          node-version: '24.12.0'
+          node-version: "24.12.0"
       - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
         with:
-          version: '12.11.2'
+          version: "12.11.2"
           cache: true
       - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f # master
         with:
-          toolchain: '1.96.0'
+          toolchain: "1.96.0"
           components: rustfmt, clippy
       - name: Install frontend dependencies
         run: pnpm install --frozen-lockfile
+      - name: Frontend formatting
+        run: pnpm format:check
+      - name: Selection geometry tests
+        run: pnpm test:frontend
       - name: Download and verify OCR models
         run: pnpm models:download
       - name: Frontend typecheck and build

@@ -1,3 +1,5 @@
+//! Anki-compatible UTF-8 TSV export with HTML fields and a native save dialog.
+
 use crate::history::{Entry, HistoryStore, source_key};
 use serde::Serialize;
 use std::{io::Write, path::Path};
@@ -11,7 +13,7 @@ pub struct ExportResult {
     pub count: usize,
 }
 
-fn html(text: &str) -> String {
+fn escape_anki_html(text: &str) -> String {
     text.replace('&', "&amp;")
         .replace('<', "&lt;")
         .replace('>', "&gt;")
@@ -21,6 +23,8 @@ fn html(text: &str) -> String {
         .replace('\r', "\n")
         .replace('\n', "<br>")
 }
+/// Import headers configure Tab, HTML, Front/Back fields, and the tags column.
+/// CSV quoting protects literal tabs; HTML escaping preserves visible source text.
 pub fn format_entries(entries: &[Entry]) -> Result<Vec<u8>, String> {
     let mut output =
         b"#separator:Tab\n#html:true\n#columns:Front\tBack\tTags\n#tags column:3\n".to_vec();
@@ -31,8 +35,8 @@ pub fn format_entries(entries: &[Entry]) -> Result<Vec<u8>, String> {
         for entry in entries {
             writer
                 .write_record([
-                    html(&source_key(&entry.source_text)),
-                    html(&entry.translation),
+                    escape_anki_html(&source_key(&entry.source_text)),
+                    escape_anki_html(&entry.translation),
                     "rustlens".into(),
                 ])
                 .map_err(|e| e.to_string())?;
@@ -41,9 +45,10 @@ pub fn format_entries(entries: &[Entry]) -> Result<Vec<u8>, String> {
     }
     Ok(output)
 }
+/// Write beside the destination and replace it atomically after flushing.
 pub fn save_entries(entries: &[Entry], path: &Path) -> Result<(), String> {
     if entries.is_empty() {
-        return Err("Позначте хоча б одну фразу для навчання.".into());
+        return Err("Познач хоча б одну фразу для навчання.".into());
     }
     let bytes = format_entries(entries)?;
     let directory = path
@@ -67,7 +72,7 @@ pub async fn export_anki(
     tauri::async_runtime::spawn_blocking(move || {
         let entries = app.state::<HistoryStore>().selected()?;
         if entries.is_empty() {
-            return Err("Позначте хоча б одну фразу для навчання.".into());
+            return Err("Познач хоча б одну фразу для навчання.".into());
         }
         let file = app
             .dialog()
@@ -105,6 +110,7 @@ mod tests {
             selected_for_study: true,
         }
     }
+
     #[test]
     fn utf8_html_and_tsv_fields_round_trip() {
         let output = format_entries(&[entry(
@@ -127,6 +133,7 @@ mod tests {
         assert_eq!(&records[0][1], "Привіт &amp; дякую!<br>Другий\tрядок");
         assert_eq!(&records[0][2], "rustlens");
     }
+
     #[test]
     fn export_contains_only_selected_and_overwriting_is_safe() {
         let dir = tempfile::tempdir().unwrap();
@@ -143,6 +150,7 @@ mod tests {
         assert_eq!(first, std::fs::read(path).unwrap());
         assert!(!String::from_utf8(first).unwrap().contains("Not chosen"));
     }
+
     #[test]
     fn empty_selection_does_not_create_file() {
         let dir = tempfile::tempdir().unwrap();
@@ -150,6 +158,7 @@ mod tests {
         assert!(save_entries(&[], &path).is_err());
         assert!(!path.exists());
     }
+
     #[test]
     #[ignore = "Writes an import fixture to RUSTLENS_TEST_EXPORT"]
     fn writes_anki_import_fixture() {

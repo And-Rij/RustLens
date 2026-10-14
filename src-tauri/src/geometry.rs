@@ -1,3 +1,5 @@
+//! Physical-pixel crop validation and result-window placement.
+
 /// Coordinates are physical pixels relative to the captured monitor.
 #[derive(Debug, Clone, Copy)]
 pub struct Rect {
@@ -10,7 +12,7 @@ pub struct Rect {
 impl Rect {
     pub fn validate(self, frame_width: u32, frame_height: u32) -> Result<Self, String> {
         if self.width < 2 || self.height < 2 {
-            return Err("Виділіть більший фрагмент екрана.".into());
+            return Err("Виділи більший фрагмент екрана.".into());
         }
         let right = self.x.checked_add(self.width);
         let bottom = self.y.checked_add(self.height);
@@ -21,6 +23,8 @@ impl Rect {
     }
 }
 
+/// Prefer the right of the crop, fall back to the left, then clamp to the monitor.
+/// Monitor origins can be negative in a multi-monitor desktop layout.
 pub fn popup_position(
     origin: (i32, i32),
     frame: (u32, u32),

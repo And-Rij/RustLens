@@ -1,3 +1,5 @@
+//! CPU text recognition with a lazily loaded, reusable Ocrs engine.
+
 use image::{DynamicImage, RgbaImage};
 use ocrs::{ImageSource, OcrEngine, OcrEngineParams};
 use rten::Model;
@@ -11,12 +13,15 @@ impl OcrService {
         let mut engine = self
             .0
             .lock()
-            .map_err(|_| "Не вдалося отримати OCR. Перезапустіть RustLens.")?;
+            .map_err(|_| "Не вдалося отримати OCR. Перезапусти RustLens.")?;
         if engine.is_none() {
             let load = |name: &str| {
                 let path = models.join(name);
                 if !path.is_file() {
-                    return Err("OCR-моделі відсутні. Виконайте pnpm models:download у папці проєкту та перезапустіть RustLens.".to_string());
+                    return Err(
+                        "Не знайдено OCR-моделі. Віднови файли моделей і перезапусти RustLens."
+                            .to_string(),
+                    );
                 }
                 Model::load_file(path)
                     .map_err(|e| format!("Не вдалося прочитати OCR-модель {name}: {e}"))
@@ -54,7 +59,7 @@ impl OcrService {
         let text = text.trim().to_string();
         if text.is_empty() {
             return Err(
-                "У фрагменті не знайдено тексту. Виділіть текст ближче або введіть його вручну."
+                "У фрагменті не знайдено тексту. Виділи текст ближче або введіть його вручну."
                     .into(),
             );
         }

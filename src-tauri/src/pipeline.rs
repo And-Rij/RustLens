@@ -1,3 +1,6 @@
+//! Runs each selected fragment through OCR, local translation, and history storage.
+//! New requests invalidate previous work; only the current request may publish a result.
+
 use crate::{capture::SelectionPreview, ocr::OcrService, ollama::OllamaService};
 use base64::{Engine, engine::general_purpose::STANDARD};
 use serde::Serialize;
@@ -30,6 +33,7 @@ pub struct Progress {
 
 #[derive(Default)]
 pub struct Pipeline {
+    // Incremented on start and cancel to reject stale asynchronous results.
     revision: AtomicU64,
     progress: Mutex<Option<Progress>>,
     pub cancelled: tokio::sync::Notify,
@@ -42,6 +46,7 @@ impl Pipeline {
             .map(|p| p.clone())
             .map_err(|_| "Не вдалося отримати переклад.".into())
     }
+
     pub fn cancel(&self) {
         let revision = self.revision.fetch_add(1, Ordering::SeqCst) + 1;
         self.cancelled.notify_waiters();
@@ -54,6 +59,7 @@ impl Pipeline {
             progress.error = Some("Переклад скасовано. Можна повторити запит.".into());
         }
     }
+
     pub fn start(&self, selection_id: u64, text: Option<String>, model: String) -> Progress {
         let request_id = self.revision.fetch_add(1, Ordering::SeqCst) + 1;
         self.cancelled.notify_waiters();
@@ -80,6 +86,7 @@ impl Pipeline {
         }
         progress
     }
+
     pub fn mark_study(&self, id: i64, selected: bool) -> Result<Option<Progress>, String> {
         let mut current = self
             .progress
@@ -93,9 +100,11 @@ impl Pipeline {
         }
         Ok(None)
     }
+
     pub fn is_current(&self, request: u64) -> bool {
         self.revision.load(Ordering::SeqCst) == request
     }
+
     fn update(&self, progress: &Progress) -> bool {
         if let Ok(mut current) = self.progress.lock() {
             if !self.is_current(progress.request_id) {
@@ -106,6 +115,7 @@ impl Pipeline {
         }
         false
     }
+
     fn publish(&self, app: &tauri::AppHandle, progress: &Progress) {
         if self.update(progress) {
             let _ = app.emit("translation-progress", progress);
@@ -127,6 +137,8 @@ fn models_path(app: &tauri::AppHandle) -> Result<PathBuf, String> {
         .map_err(|e| e.to_string())
 }
 
+/// Start background work and return immediately so the desktop UI stays responsive.
+/// Providing edited text skips OCR; a new capture supplies an image instead.
 pub fn launch(
     app: tauri::AppHandle,
     selection: SelectionPreview,
@@ -142,6 +154,7 @@ pub fn launch(
             return;
         }
         let result = async {
+            // CPU-bound OCR runs on a worker. Cancellation discards its result afterward.
             if progress.phase == "recognizing" {
                 let directory = models_path(&app)?;
                 let ocr_app = app.clone();
@@ -168,10 +181,12 @@ pub fn launch(
                 pipeline.publish(&app, &progress);
             }
             let ollama = app.state::<OllamaService>();
-            let _guard = ollama.gate.lock().await;
+            let translation_guard = ollama.gate.lock().await;
             if !pipeline.is_current(progress.request_id) {
                 return Ok(());
             }
+            // Register before checking the revision again to avoid losing a cancellation
+            // between the state check and the first poll of the HTTP request.
             let cancelled = pipeline.cancelled.notified();
             tokio::pin!(cancelled);
             cancelled.as_mut().enable();
@@ -185,7 +200,8 @@ pub fn launch(
             };
             progress.translation = translation;
             progress.translation_ms = Some(start.elapsed().as_millis());
-            drop(_guard);
+            drop(translation_guard);
+            // Storage failure is reported separately: the translated text remains usable.
             let save_app = app.clone();
             let save_progress = progress.clone();
             let saved = tauri::async_runtime::spawn_blocking(move || {
