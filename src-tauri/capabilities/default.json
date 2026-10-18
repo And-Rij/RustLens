@@ -1,0 +1,14 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Local RustLens windows and events",
+  "windows": [
+    "main",
+    "selection",
+    "result"
+  ],
+  "permissions": [
+    "core:default",
+    "opener:default"
+  ]
+}

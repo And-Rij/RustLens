@@ -1,0 +1,6 @@
+#separator:Tab
+#html:true
+#columns:Front	Back	Tags
+#tags column:3
+Keep an eye on the gate.	Стежте за воротами.<br>Цитати &amp; &lt;теги&gt;.	rustlens
+Say &quot;hello&quot; &lt;player&gt;	Скажи &quot;привіт&quot;.	rustlens
